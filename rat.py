@@ -246,7 +246,7 @@ if resume_file and jd_file:
         
         result = response["structured_response"]
         
-        st.write("##Resume Screening Result")
+        st.write("**Resume Screening Result**")
         st.write(f"**Decision:** {result.decision}")
         st.write(f"**Summary:** {result.score}/100")
         st.write(f"**Skill Fit:** {result.skill_fit}")
