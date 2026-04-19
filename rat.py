@@ -244,7 +244,12 @@ if resume_file and jd_file:
             ]
         })
         
-        result = response["structured_response"]
+        result = response.get("structured_response")
+
+        if result is None:
+            st.error("LLM did not return structured output. Showing raw response.")
+            st.write(response)
+            st.stop()
         
         st.write("**Resume Screening Result**")
         st.write(f"**Decision:** {result.decision}")
