@@ -17,7 +17,12 @@ import streamlit as st
 
 load_dotenv()
 
-os.environ['GOOGLE_API_KEY'] = os.getenv('gemini_key')
+api_key = os.getenv("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY")
+
+if not api_key:
+    raise ValueError("API key not found")
+
+os.environ["GOOGLE_API_KEY"] = api_key
 
 llm = "google_genai:gemini-2.5-flash-lite"
 
