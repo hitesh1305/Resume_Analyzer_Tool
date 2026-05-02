@@ -168,6 +168,7 @@ Random Forest
 ## 📦 Installation
 
 git clone https://github.com/hitesh1305/ML_model_recommendation.git
+
 cd ml_model_recommendation  
 pip install -r requirements.txt  
 streamlit run app.py  
