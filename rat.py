@@ -233,16 +233,59 @@ jd_file = st.file_uploader("Upload Job Description PDF", type="pdf")
 
 if resume_file and jd_file:
     if st.button("Evaluate"):
-        resume = extract_text_from_uploaded_pdf(resume_file)
-        job_desc = extract_text_from_uploaded_pdf(jd_file)
-        
-        response = sup_agent.invoke({
-            "messages": [
-                HumanMessage(
-                    content=f"Screen this resume:\n\n{resume}\n\nAgainst this job description:\n\n{job_desc}"
-                )
-            ]
-        })
+
+        with st.spinner("Extracting PDF text..."):
+            try:
+                resume = extract_text_from_uploaded_pdf(resume_file)
+                job_desc = extract_text_from_uploaded_pdf(jd_file)
+
+                st.success("PDF extraction completed")
+
+            except Exception as e:
+                st.error(f"PDF Extraction Error: {e}")
+                st.stop()
+
+        with st.spinner("Running AI evaluation..."):
+            try:
+                response = sup_agent.invoke({
+                    "messages": [
+                        HumanMessage(
+                            content=f"""
+                            Screen this resume:
+
+                            {resume}
+
+                            Against this job description:
+
+                            {job_desc}
+                            """
+                        )
+                    ]
+                })
+
+                st.success("AI evaluation completed")
+
+            except Exception as e:
+                st.error(f"Agent Error: {e}")
+                st.stop()
+
+        st.write("RAW RESPONSE")
+        st.write(response)
+
+        result = response.get("structured_response")
+
+        if result is None:
+            st.error("LLM did not return structured output.")
+            st.stop()
+
+        st.write("## Resume Screening Result")
+
+        st.write(f"**Decision:** {result.decision}")
+        st.write(f"**Score:** {result.score}/100")
+        st.write(f"**Summary:** {result.summary}")
+        st.write(f"**Skill Fit:** {result.skill_fit}")
+        st.write(f"**Experience Fit:** {result.experience_fit}")
+        st.write(f"**Salary Fit:** {result.salary_fit}")
         
         result = response.get("structured_response")
 
